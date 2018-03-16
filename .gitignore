@@ -1,0 +1,9 @@
+# Ingnore IDE folders
+**/.vs 
+**/.vscode
+
+# Ignore libraries
+**/node_modules
+
+# Ignore diagnostic files
+**/npm-debug.log

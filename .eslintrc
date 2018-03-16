@@ -1,0 +1,31 @@
+{
+  "ecmaFeatures": {
+		"globalReturn": true,
+		"modules": true
+	},
+	"env": {
+		"browser": true,
+		"es6": true,
+		"node": true
+  },
+  "globals": {
+    "describe": true,
+    "it": true,
+    "expect": true
+  },
+  "root": true,
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "extends": ["eslint:recommended", "auz"],
+  "rules": {
+    "indent": ["error", 2],
+    "max-len": ["error", 120],
+    "semi": ["error", "never"],
+    "no-console": 0,
+    "no-trailing-spaces": 0,
+    "require-jsdoc": 0
+  }
+}
