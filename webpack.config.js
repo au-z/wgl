@@ -8,7 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 // const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
 
 const config = {
-  entry: ['whatwg-fetch', path.resolve(__dirname, appConfig.entry)],
+  entry: ['babel-polyfill', 'whatwg-fetch', path.resolve(__dirname, appConfig.entry)],
   output: {
     path: path.resolve(__dirname, appConfig.outdir),
     filename: appConfig.filename,

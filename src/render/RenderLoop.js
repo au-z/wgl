@@ -3,6 +3,7 @@
 
 class RenderLoop {
   constructor(renderFn, fps = 60) {
+    this.dependencies = {} // all dependencies
     this.lastFrameMs = null // time of last frame
     this.render = renderFn
     this.on = false
@@ -16,7 +17,7 @@ class RenderLoop {
       if(deltaMs >= this.framerate) { // execute frame
         this.fps = Math.floor(1/dt)
         this.lastFrameMs = now
-        this.render(dt)
+        this.render(dt, this.dependencies)
       }
 
       if(this.on) window.requestAnimationFrame(this.run)
@@ -28,7 +29,7 @@ class RenderLoop {
       this.fps = Math.floor(1/dt)
       this.lastFrameMs = now
 
-      this.render(dt)
+      this.render(dt, this.dependencies)
       if(this.on) window.requestAnimationFrame(this.run)
     }
 
@@ -38,6 +39,11 @@ class RenderLoop {
     } else {
       this.run = fpsUncapRun
     }
+  }
+
+  bindDependencies(deps) {
+    this.dependencies = deps
+    return this
   }
 
   start() {

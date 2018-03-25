@@ -105,7 +105,14 @@ export default function GL(id, options) {
     return rtn
   }
 
-  gl._loadTexture = function(name, img, yflip = false) {
+  gl._loadTextureAsync = function(name, url) {
+    return new Promise((res, rej) => {
+      http(url, {mode: 'dom', type: 'img'}).then((tex) => res(gl._loadTexture(name, tex)))
+    })
+  }
+
+  // Blender outputs textures with y-flipped texture coordinates.
+  gl._loadTexture = function(name, img, yflip = true) {
     if(!img) throw new Error(`No image provided`)
     const tex = this.createTexture()
     if(yflip) this.pixelStorei(this.UNPACK_FLIP_Y_WEBGL, true)
@@ -124,11 +131,9 @@ export default function GL(id, options) {
     return tex
   }
   
-  gl._loadCubeMapAsync = function(name, urlArr, width, height) {
-    let promiseArr = urlArr.map((url) => http(url).then((r) => r.arrayBuffer()))
-    Promise.all(promiseArr).then((values) => gl._loadCubeMap(name, values, true, {
-      width, height,
-    }))
+  gl._loadCubeMapAsync = function(name, urlFn, urlFragments) {
+    let promiseArr = urlFragments.map((f) => http(urlFn(f), {mode: 'dom', type: 'img'}))
+    return Promise.all(promiseArr).then((values) => gl._loadCubeMap(name, values))
   }
 
   gl._loadCubeMap = function(name, imgArr, fromBuffer = false, bufferOptions = {}) {
@@ -137,15 +142,8 @@ export default function GL(id, options) {
     this.bindTexture(this.TEXTURE_CUBE_MAP, tex)
 
     imgArr.forEach((img, i) => {
-      if(fromBuffer) {
-        let bytes = new Uint8Array(img)
-        console.log(bytes.length, Math.sqrt(bytes.length))
-        this.texImage2D(this.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, this.RGBA, bufferOptions.width,
-          bufferOptions.height, 0, this.RGBA, this.UNSIGNED_BYTE, bytes)
-      } else {
-        this.texImage2D(this.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, this.RGBA,
-          this.RGBA, this.UNSIGNED_BYTE, img)
-      }
+      this.texImage2D(this.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, this.RGBA,
+        this.RGBA, this.UNSIGNED_BYTE, img)
     })
 
     this.texParameteri(this.TEXTURE_CUBE_MAP, this.TEXTURE_MAG_FILTER, this.LINEAR)
