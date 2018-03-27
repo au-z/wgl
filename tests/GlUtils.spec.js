@@ -1,4 +1,10 @@
 import GlUtils from '../src/GlUtils'
+describe('rangeMap', () => {
+  it('maps from range A to range B', () => expect(GlUtils.rangeMap(2, [0, 5], [0, 50])).toBe(20))
+  it('maps min from range A to range B', () => expect(GlUtils.rangeMap(0, [0, 5], [0, 50])).toBe(0))
+  it('maps max from range A to range B', () => expect(GlUtils.rangeMap(5, [0, 5], [0, 50])).toBe(50))
+  it('maps accurately outside of range A', () => expect(GlUtils.rangeMap(80, [0, 20], [0, 80])).toBe(320))
+})
 
 describe('hexToFloat', () => {
   it('converts single colors', () => {

@@ -1,7 +1,7 @@
 import http from './http'
 
 export default class {
-  static createMeshAsync(gl, name, url, yflip) {
+  static createMeshAsync(gl, name, url, yflip, keepRawData) {
     return new Promise((res, rej) => {
       http(url, {'Content-Type': 'text/plain'}).then((r) => r.text())
         .then((obj) => res(this.objToMesh(gl, name, ...this.parseObj(obj))))

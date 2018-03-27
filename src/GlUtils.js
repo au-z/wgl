@@ -1,6 +1,8 @@
 /* eslint-disable */
 
 export default (() => {
+  const rangeMap = (a, aRange, bRange) => (a - aRange[0]) / (aRange[1] - aRange[0]) * (bRange[1] - bRange[0]) + bRange[0]
+
   const hexToFloat = (...c) => c.reduce((acc, c) => {
     if(![3, 4, 6, 7].includes(c.length)) return acc
     c = (c[0] == '#') ? c.substring(1) : c
@@ -27,8 +29,9 @@ export default (() => {
   }
 
   return {
-    replicate,
-    interleave,
     hexToFloat,
+    interleave,
+    rangeMap,
+    replicate,
   }
 })()

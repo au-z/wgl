@@ -9,10 +9,11 @@ import Primatives from './model/primatives'
 import Camera from './camera/Camera'
 import CameraController from './camera/CameraController'
 
-import TextureShader from './shaders/Texture.shader'
+import PhongTextureShader from './shaders/PhongTexture.shader'
 import GridAxisShader from './shaders/GridAxis.shader'
 
 import Scene from './loaders/Scene.loader'
+import VertexModel from './model/primatives/Vertex.model';
 
 (function registerGlobalMathExtensions() {
   Math._degToRad = (deg) => deg * (Math.PI / 180)
@@ -32,7 +33,12 @@ window.addEventListener('load', () => {
       .setScale(1, 1, 1)
       .setRotation(0, 0, 0)
       .setPosition(0, 0, 0),
+    cube: new Model(Primatives.Cube.createMesh(gl, 1, 1, 1, {name: 'cube'})),
     skybox: new Model(Primatives.Cube.createMesh(gl, 100, 100, 100, {name: 'skybox'})),
+    light: new VertexModel(gl, 20).addColor('#64c4f2').addPoint([0, 0, 0], 0).finalize(),
+    light2: new VertexModel(gl, 20).addColor('#64c4f2').addPoint([0, 0, 0], 0).finalize(),
+    light3: new VertexModel(gl, 20).addColor('#64c4f2').addPoint([0, 0, 0], 0).finalize(),
+    light4: new VertexModel(gl, 20).addColor('#64c4f2').addPoint([0, 0, 0], 0).finalize(),
   }
 
   let assetsAsync = {
@@ -47,8 +53,8 @@ window.addEventListener('load', () => {
     },
     shader: {
       type: 'SHADER/TEXTURE',
-      name: 'pirateShader',
-      is: TextureShader,
+      name: 'shader',
+      is: PhongTextureShader,
       texture: {
         name: 'tex001',
         url: '/assets/textures/pirate.png',
@@ -68,6 +74,10 @@ window.addEventListener('load', () => {
   Scene.load(gl, assets, assetsAsync).then((assets) =>
     new RenderLoop(draw).bindDependencies(assets).start())
 
+  let theta = 0
+  let R = 1.5
+  let inc = 1
+
   function draw(dt, a) {
     camera.updateViewMatrix()
     gl._clear()
@@ -79,11 +89,21 @@ window.addEventListener('load', () => {
 
     a.gridShader.activate().setCameraMatrix(camera.viewMatrix)
       .renderModel(a.grid.preRender())
+    
+    theta += inc * dt
+    let x = R * Math.cos(theta)
+    let z = R * Math.sin(theta)
+    a.light.setPosition(x, 1, z).render(camera)
+    a.light2.setPosition(x, 2, z).render(camera)
+    a.light3.setPosition(x, 3, z).render(camera)
+    a.light4.setPosition(x, 4, z).render(camera)
 
-    a.shader.activate()
-      .preRender()
+    a.shader.activate().preRender()
       .setCameraMatrix(camera.viewMatrix)
+      .setCameraPos(camera)
+      .setLightPos(a.light)
       .setTime(performance.now())
+      // .renderModel(a.cube.preRender())
       .renderModel(a.pirate.preRender())
   }
 })

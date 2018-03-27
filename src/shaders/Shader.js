@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import ShaderUtil from './ShaderUtils'
+import ShaderUtil from './ShaderUtil'
 
 export default class Shader {
   constructor(gl, vsSrc, fsSrc) {
