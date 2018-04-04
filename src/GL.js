@@ -30,14 +30,8 @@ export default function GL(id, options) {
     return this
   }
 
-  gl._setSize = function(w, h) {
-    if(!w && !h) window.addEventListener('resize', () => {
-      const w = document.body.clientWidth
-      const h = document.body.clientHeight
-      this.canvas.width = w
-      this.canvas.height = h
-      this.viewport(0, 0, w, h)
-    })
+  gl._setSize = function(w, h, listen = true) {
+    if(listen) window.addEventListener('resize', () => this._setSize(null, null, false))
     w = w || document.body.clientWidth
     h = h || document.body.clientHeight
     this.canvas.width = w

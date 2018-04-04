@@ -42,6 +42,7 @@ class RenderLoop {
   }
 
   bindDependencies(deps) {
+    console.log(deps)
     this.dependencies = deps
     return this
   }
